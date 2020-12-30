@@ -65,7 +65,7 @@ Enter SQL statements terminated with a ";"
 sqlite> .table
 traffic
 sqlite> .schema
-CREATE TABLE traffic(mac TEXT NOT NULL,app_name VARCHAR(50) NOT NULL,cat_name VARCHAR(50) NOT NULL,timestamp UNSIGNED BIG INT NOT NULL,tx UNSIGNED BIG INT NOT NULL,rx UNSIGNED BIG INT NOT NULL);
+CREATE TABLE traffic(mac TEXT NOT NULL, app_name VARCHAR(50) NOT NULL, cat_name VARCHAR(50) NOT NULL, timestamp UNSIGNED BIG INT NOT NULL, tx UNSIGNED BIG INT NOT NULL, rx UNSIGNED BIG INT NOT NULL);
 CREATE INDEX app_name ON traffic(app_name ASC);
 CREATE INDEX cat_name ON traffic(cat_name ASC);
 CREATE INDEX mac ON traffic(mac ASC);
@@ -90,6 +90,32 @@ nvram set wl1_maclist_x=$maclist
 nvram commit
 service restart_wireless
 ```
+
+## Present data
+
+The device is accessible trough https, and all the file related to the web site are saved into the squashfs file of the firmware, so they cannot modified. But I discovered that there are some symbolic links to an external directory, easy writable:
+
+```
+admin@RT-AC68U-2530:/www# ls -la
+...
+-rw-rw-r--    1 admin    root            46 Aug 14 22:22 ureip.asp
+lrwxrwxrwx    1 admin    root            15 Aug 14 22:23 user -> /tmp/var/wwwext
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user1.asp -> user/user1.asp
+lrwxrwxrwx    1 admin    root            15 Aug 14 22:22 user10.asp -> user/user10.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user2.asp -> user/user2.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user3.asp -> user/user3.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user4.asp -> user/user4.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user5.asp -> user/user5.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user6.asp -> user/user6.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user7.asp -> user/user7.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user8.asp -> user/user8.asp
+lrwxrwxrwx    1 admin    root            14 Aug 14 22:22 user9.asp -> user/user9.asp
+drwxrwxr-x    2 admin    root             3 Aug 14 22:22 userRpm
+-rw-rw-r--    1 admin    root          4446 Aug 14 22:22 usp_style.css
+...
+```
+
+Ideally, creating a script named `/tmp/var/wwwext/user1.asp` will allow to present data in a fancy way accessible to the url `https://router.asus.com:8443/user1.asp`, thanks also to the included chart.js library.
 
 ## Cross compiling
 
