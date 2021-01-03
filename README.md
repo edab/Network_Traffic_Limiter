@@ -74,6 +74,75 @@ CREATE INDEX timestamp ON traffic(timestamp ASC);
 
 ## Limit device access
 
+### Using control script
+
+It is possible to remotly control the PS4 powerup and powerdown using a script called [PS4-waker](https://github.com/dhleong/ps4-waker), developed decoding the protocol used by the PS4 remote screen utility.
+
+The command works as follow:
+
+```
+C:\>ps4-waker --help
+ps4-waker - Wake your PS4 (and more!) with help from the Playstation App
+
+Usage:
+  ps4-waker [options]                       Wake PS4 device(s)
+  ps4-waker [options] check                 Check a device's status
+  ps4-waker [options] osk-submit [text]     Submit the OSK, optionally
+                                            providing the text
+  ps4-waker [options] remote <key-name...>  Send remote key-press event(s)
+  ps4-waker [options] search                Search for devices
+  ps4-waker [options] standby               Request the device enter
+                                            standby/rest mode
+  ps4-waker [options] start <titleId>       Start a specified title id
+  ps4-waker --help | -h | -?                Shows this help message.
+  ps4-waker --version | -v                  Show package version.
+
+Options:
+  --bind | -b <ip>             Bind to a specific network adapter IP, if
+                               you have multiple
+  --bind-port | -p <port>      Bind on a specific port, if you need to
+                               route specifically
+  --credentials | -c <file>    Specify credentials file
+  --device | -d <ip>           Specify IP address of a specific PS4
+  --failfast                   Don't request credentials if none
+  --skip-login                 Don't automatically login
+  --pin <pin-code>             Manual pin-code registration
+  --pass <passcode>            Provide passcode for login, if needed
+  --timeout | -t <time>        Stop searching after <time> milliseconds;
+                               the default timeout, if unspecified, is 10
+                               seconds
+
+Device selection:
+  For any command, there are four possible conditions based on the flags
+  you've specified:
+    1. Neither -t nor -d: Will act on the first device found; this is for
+       households with a single device on the network
+    2. Just -t: Will act on every device found within <time> millseconds
+    3. Just -d: Will search for at most 10 seconds (the default timeout)
+       for and only act on the provided device, quitting if found
+    4. Both -t and -d: Will search for at most <time> seconds for and only
+       act on the provided device, qutting early if found.
+
+Checking device status:
+  The "check" command provides output similar to "search," but only for
+  the first matching device found (see above). In addition, it will exit
+  with code '0' only if the device is awake; if it is in standby, it
+  will exit with code '1', and in any other situation it will exit with
+  code '2'. This command is intended to simplify initial state detection
+  for home automation users.
+
+Key names:
+  Button names are case insensitive, and can be one of:
+    up, down, left, right, enter, back, option, ps
+  You cannot send the actual x, square, etc. buttons.
+  A string of key presses may be provided, separated by spaces, and they
+   will be sent sequentially.
+  In addition, a key name may be followed by a colon and a duration in
+   milliseconds to hold that key, eg: ps4-waker remote ps:1000
+```
+
+### Using firewall rules
+
 We can limit network access to a device updating the two mac address list:
 
 - wl0_maclist_x for 2.4Ghz
@@ -150,3 +219,4 @@ clean:
 
 - [AsusWrt Merlin firmware](https://github.com/RMerl/asuswrt-merlin) by Eric Sauvageau
 - [AsusWrt script example](https://github.com/mgor/asuswrt-scripts) by Mikael Göransson
+- [PS4 waker](https://github.com/dhleong/ps4-waker)
